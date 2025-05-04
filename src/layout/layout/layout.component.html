@@ -1,0 +1,14 @@
+
+<div class="container-fluid">
+    <app-sidebar></app-sidebar>
+    <div class="main-content">
+        <!-- <app-header></app-header> -->
+        <div class="content">
+            @if (loadingService.loading$ | async) {
+                <app-loading  class="loading-overlay"></app-loading>
+            }
+
+            <router-outlet></router-outlet>
+        </div>
+
+</div>

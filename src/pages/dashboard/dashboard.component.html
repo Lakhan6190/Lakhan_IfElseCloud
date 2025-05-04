@@ -1,0 +1,280 @@
+<div class="if-dashboard">
+<div class="d-flex justify-content-between">
+    <p class="title">Welcome back, Olivia </p>
+    <div class="d-flex gap-2 align-items-center">
+            <i class="bi bi-search me-2"></i>
+        <button class="btn btn-md btn-outline-secondary"><i class="bi bi-toggles"></i> Support</button>
+        <button class="btn btn-md btn-outline-secondary"><i class="bi bi-download"></i> Logout</button>
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12 col-md-8 col-lg-8">
+    <div class="card">
+        <div class="card-header">
+        <div class="d-flex justify-content-between">
+            <div class="d-flex gap-3 align-items-center flex-columns">
+                <i class="bi bi-box-fill"></i>
+            <div>
+            <h6 class="mb-1" >Vendor breakdown </h6>
+            <p class="text-normal">Keep track of vendors and their security ratings. </p>
+        </div>
+        </div>
+        <div class="more-info">
+            <i class="bi bi-three-dots-vertical"></i>
+        </div>
+
+        </div>
+    </div>
+    <div class="card-body">
+        <highcharts-chart 
+        [Highcharts]="Highcharts"
+        [options]="chartOptions"
+        class="highcharts-container">
+      </highcharts-chart>
+    </div>
+
+    <div class="card-footer">
+        <button class="btn btn-md btn-outline-secondary float-end"> View full report</button>
+    </div>
+
+    </div>
+
+    </div>
+
+
+    <div class="col-sm-12 col-md-4 col-lg-4">
+        <div class="card">
+            <div class="card-header">
+            <div class="d-flex justify-content-between">
+                <div>
+                <h6 class="mb-1" >Vendor monitored </h6>
+                <p class="text-normal">You're using 80% of available spots. </p>
+            </div>
+            <div class="more-info">
+                <i class="bi bi-three-dots-vertical"></i>
+            </div>
+    
+            </div>
+        </div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <highcharts-chart 
+            [Highcharts]="Highcharts"
+            [options]="chartOptionsvendor"
+            class="highcharts-container-vendor">
+          </highcharts-chart>
+          <div class="upgrade">
+            <i class="bi bi-graph-up-arrow"></i> 10%
+          </div>
+          </div>
+         
+          <div class="upgrade-info">
+            <p class="upgrade-title ">You'he almost reached your limit</p>
+            <p class="upgrade-message">You have used 80% of your available spots.
+              Upgrade plan to monitor more vendors.</p>
+            
+          </div>
+          <!-- <fusioncharts
+  width="{{ width }}"
+  height="{{ height }}"
+  type="{{ type }}"
+  dataFormat="{{ dataFormat }}"
+  [dataSource]="dataSource">
+</fusioncharts> -->
+        </div>
+    
+        <div class="card-footer">
+            <button class="btn btn-sm btn-outline-secondary float-end">  <i class="bi bi-lightning-charge"></i>
+                Upgrade Plan</button>
+        </div>
+    
+        </div>
+    </div>
+
+</div>
+
+<div class="row mt-3">
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="card">
+            <div class="card-header p-3">
+                <div class="d-flex justify-content-between">
+                    <h6 class="mb-1" >Team members <span
+                      class="badge me-1 rounded-pill px-2 count"
+                    > {{ grid_rows.length }}
+                    </span></h6>
+                <div class="more-info">
+                    <i class="bi bi-three-dots-vertical"></i>
+                </div>
+        
+                </div>
+            </div>
+      
+
+        <div>
+            <table class="table table-hover">
+                <thead class="table-light">
+                  <tr>
+                    <th>
+                        <input type="checkbox" class="if-checkbox" (change)="toggleAllRows($event)" />
+                      </th>
+                    @for (item of grid_columns; track $index) {
+                      <th class="column-title" >{{ item.column_name }}
+                        @if (item.column_name === 'Status') {
+                          <small> <i class="bi bi-arrow-down ms-1"></i>  </small>
+                        }
+                        @if (item.column_name === 'Role') {
+                         <small> <i class="bi bi-question-circle ms-1"></i>  </small>
+                        }
+                      
+                      
+                      </th>
+                      
+                   }
+                   <th class="column-title title-action text-center">
+                    
+                  </th>
+                  </tr>
+                </thead>
+                <tbody>
+                   
+                    @for (row of grid_rows; track $index) {
+                        <tr>
+                            <td class="align-middle">
+                                <input type="checkbox"  class="if-checkbox" [(ngModel)]="row['selected']" />
+                            </td>
+                          @for (col of grid_columns; track $index) {
+                            <td>
+                              @switch (col.column_key) {
+                  
+                                @case ('name') {
+                                  {{ row.name.first_name }} {{ row.name.last_name }} <br />
+                                  <small class="text-muted">{{ row.name.handle }}</small>
+                                }
+                  
+                                @case ('status') {
+                                  <span
+                                    class="status-pill"
+                                    [ngClass]="{
+                                      'status-customer': row[col.column_key] === 'Customer',
+                                      'status-churned': row[col.column_key] === 'Churned'
+                                    }"
+                                  >
+                                    <span class="status-dot"></span>
+                                    {{ row[col.column_key] }}
+                                  </span>                            
+                                }
+                  
+                                @case ('role') {
+                                  {{ row[col.column_key] }}
+                                }
+                  
+                                @case ('email') {
+                                  {{ row[col.column_key] }}
+                                }
+                  
+                                @case ('license_used') {
+                                  <div class="d-flex align-items-center gap-2">
+                                    <div class="progress flex-grow-1">
+                                      <div
+                                        class="progress-bar progress-bars"
+                                        [style.width.%]="row[col.column_key]"
+                                      ></div>
+                                    </div>
+                                    <small>{{ row[col.column_key] }}%</small>
+                                  </div>
+                                }
+                  
+                                @case ('teams') {
+                                  @for (team of row['teams']; track $index) {
+                                    <span
+                                      class="badge me-1 rounded-pill px-2"
+                                      [style.background-color]="team.background_color"
+                                      [style.color]="team.text_color"
+                                    >
+                                      {{ team.value }}
+                                    </span>
+                                  }
+                                }
+                  
+                                @default {
+                                  {{ row[col.column_key] }}
+                                }
+                  
+                              }
+                            </td>
+                          }
+
+                          <td class="d-flex justify-content-around align-items-center action-icons">
+                            <i class="bi bi-trash cursor-pointer" (click)="deleteRow(row)"></i>
+                            <i class="bi bi-pencil cursor-pointer" (click)="editRow(row)"></i>
+                          </td>
+                          
+                        </tr>
+                      }
+                
+                </tbody>
+              </table>
+            <div>
+        
+              
+              <div class=" mx-2 my-2">
+                <div class="row align-items-center text-center pagination-content">
+                  
+                  <!-- Previous -->
+                  <div class="col-auto">
+                    <div class=" mb-0">
+                        <button class="btn btn-sm pagination-btn"><i class="bi bi-arrow-left me-1"></i> Previous</button>
+                    </div>
+                  </div>
+              
+                  <!-- Page Numbers -->
+                  <div class="col">
+                    <div class="pagination justify-content-center mb-0 pagination-list">
+                      <ng-container >
+                        @for(page of pages; track $index) {
+                        <div class="page-item"  >
+                          <span class="" >{{ page }}</span>
+                        </div>
+                        <ng-template #dots>
+                          <div class="page-item disabled"><span class="page-link">...</span></div>
+                        </ng-template>
+                      }
+                      </ng-container>
+                    </div>
+                  </div>
+              
+                  <!-- Next -->
+                    <div class="col-auto">
+                      <div class=" mb-0">
+                          <button class="btn btn-sm pagination-btn"> Next <i class="bi bi-arrow-right ms-1"></i></button>
+                      </div>
+                  </div>
+              
+                </div>
+              </div>
+              
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+</div>
+
+<app-confirmation-modal
+  *ngIf="showModal"
+  [title]="'Delete ' + (selectedUser?.name?.first_name || 'User') + ' ' + (selectedUser?.name?.last_name || '')"
+  [message]="'Are you sure you want to delete ' + (selectedUser?.name?.first_name || 'this user') + ' ' + (selectedUser?.name?.last_name || '') + '?'"
+  (confirmed)="onDeleteConfirmed()"
+  (cancelled)="onCancel()"
+></app-confirmation-modal>
+
+<app-confirmation-modal
+  *ngIf="showEditModal"
+  [title]="'' + (selectedUser?.name?.first_name || 'User') + ' ' + (selectedUser?.name?.last_name || '')"
+  [showMessage]="false"
+  (ok)="onOkEdit()"
+></app-confirmation-modal>
+
